@@ -8,7 +8,7 @@ export default function FeaturedProjects({ projects }: { projects: Entry<TypePro
         <section id="projects" className="py-20 px-8 bg-white dark:bg-gray-800">
             <div className="container mx-auto">
                 <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-                    대표 프로젝트
+                    Projects
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     {projects.map((project) => {
