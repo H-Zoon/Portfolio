@@ -7,7 +7,7 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import type { Asset } from 'contentful'; 
 
 interface ProjectPageParams {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function getProject(slug: string) {
@@ -24,7 +24,8 @@ async function getProject(slug: string) {
   return response.items[0];
 }
 
-export default async function ProjectPage({ params }: ProjectPageParams) {
+export default async function ProjectPage(props: ProjectPageParams) {
+  const params = await props.params;
   const project = await getProject(params.slug);
   const thumbnail = project.fields.thumbnail as Asset | undefined;
 
