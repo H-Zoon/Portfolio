@@ -21,6 +21,7 @@ async function getAboutPageContent() {
   const response = await contentfulClient.getEntries<TypeAboutPageSkeleton>({
     content_type: 'aboutPage',
     limit: 1,
+    include: 2,
   });
 
   if (response.items.length === 0) {
