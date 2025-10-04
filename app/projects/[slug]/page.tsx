@@ -4,6 +4,7 @@ import { contentfulClient } from "@/lib/contentful";
 import { TypeProjectSkeleton } from "@/types/contentful";
 import { notFound } from "next/navigation";
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import type { Asset } from 'contentful'; 
 
 interface ProjectPageParams {
   params: { slug: string };
@@ -14,6 +15,7 @@ async function getProject(slug: string) {
     content_type: 'project',
     'fields.slug': slug,
     limit: 1,
+    include: 2,
   });
 
   if (response.items.length === 0) {
@@ -24,13 +26,17 @@ async function getProject(slug: string) {
 
 export default async function ProjectPage({ params }: ProjectPageParams) {
   const project = await getProject(params.slug);
+  const thumbnail = project.fields.thumbnail as Asset | undefined;
 
   return (
     <article className="container mx-auto py-20 px-8">
-      {project.fields.thumbnail?.fields.file?.url && (
+      {thumbnail?.fields.file?.url && (
         <img
-          src={`https:${project.fields.thumbnail.fields.file.url}`}
-          alt={project.fields.thumbnail.fields.description || project.fields.title}
+          src={`https:${thumbnail.fields.file.url}`}
+          alt={typeof thumbnail.fields.description === 'string' 
+                ? thumbnail.fields.description 
+                : project.fields.title
+              }
           className="w-full max-w-4xl mx-auto h-auto rounded-lg shadow-lg mb-12"
         />
       )}

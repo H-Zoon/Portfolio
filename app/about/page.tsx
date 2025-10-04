@@ -4,10 +4,11 @@ import { contentfulClient } from "@/lib/contentful";
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { notFound } from "next/navigation";
 import Image from 'next/image';
+import type { Asset } from 'contentful';
 
-// About 페이지 데이터 타입을 위한 인터페이스 (새로 정의)
+// About 페이지 데이터 타입을 위한 인터페이스
 interface TypeAboutPageSkeleton {
-  contentTypeId: "aboutPage"; // Contentful 모델 ID와 일치해야 합니다.
+  contentTypeId: "aboutPage";
   fields: {
     title: import('contentful').EntryFieldTypes.Text;
     profileImage: import('contentful').EntryFieldTypes.AssetLink;
@@ -32,7 +33,8 @@ async function getAboutPageContent() {
 
 export default async function AboutPage() {
   const content = await getAboutPageContent();
-  const { title, profileImage, body } = content.fields;
+  const { title, body } = content.fields;
+  const profileImage = content.fields.profileImage as Asset | undefined;
 
   return (
     <div className="bg-white dark:bg-gray-800">
@@ -42,7 +44,10 @@ export default async function AboutPage() {
           {profileImage?.fields.file?.url && (
              <Image
                 src={`https:${profileImage.fields.file.url}`}
-                alt={profileImage.fields.description || 'Profile Image'}
+                alt={typeof profileImage.fields.description === 'string' 
+                ? profileImage.fields.description 
+                : title
+              }
                 width={150}
                 height={150}
                 className="rounded-full mx-auto mb-8 shadow-lg"
