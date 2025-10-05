@@ -15,6 +15,9 @@ export default function Header() {
           <a href="/#about" className="text-gray-600 dark:text-gray-300 hover:text-blue-600">
             About
           </a>
+          <a href="/#experience" className="text-gray-600 dark:text-gray-300 hover:text-blue-600">
+            Experience
+          </a>
           <a href="#projects" className="text-gray-600 dark:text-gray-300 hover:text-blue-600">
             Projects
           </a>

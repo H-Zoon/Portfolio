@@ -17,6 +17,10 @@ export default function FeaturedProjects({ projects }: { projects: Entry<TypePro
                             ? project.fields.title
                             : '제목 없음';
 
+                        const preview = typeof project.fields.preview === 'string'
+                            ? project.fields.preview
+                            : '설명 없음';
+
                         const skillsList = Array.isArray(project.fields.skills)
                             ? project.fields.skills
                             : project.fields.skills?.['ko-KR'] || [];
@@ -42,9 +46,9 @@ export default function FeaturedProjects({ projects }: { projects: Entry<TypePro
                                 )}
                                 <div className="p-6">
                                     <h3 className="text-2xl font-bold mb-2">{title}</h3>
-                                    <p className="text-gray-700 dark:text-gray-300 mb-4">
-                                        프로젝트 설명을 보려면 클릭하세요.
-                                    </p>
+                                    <pre className="text-gray-700 dark:text-gray-300 mb-4">
+                                        {preview}
+                                    </pre>
                                     <div className="flex flex-wrap gap-2">
                                         {skillsList.map((tag: string) => (
                                             <span key={tag} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-semibold px-3 py-1 rounded-full">

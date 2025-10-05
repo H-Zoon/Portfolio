@@ -1,6 +1,7 @@
 // app/page.tsx
 import HeroSection from '@/components/HeroSection';
 import FeaturedProjects from '@/components/FeaturedProjects';
+import Experience from '@/components/Experience';
 import { contentfulClient } from '@/lib/contentful';
 import { TypeProjectSkeleton, TypeAboutPageSkeleton } from '@/types/contentful';
 
@@ -29,6 +30,7 @@ export default async function Home() {
 return (
     <main>
       <HeroSection content={aboutContent} />
+      <Experience /> 
       <FeaturedProjects projects={projects} />
     </main>
   );

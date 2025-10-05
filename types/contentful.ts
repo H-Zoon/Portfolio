@@ -6,7 +6,9 @@ export interface TypeProjectSkeleton {
   fields: {
     title: EntryFieldTypes.Text;
     slug: EntryFieldTypes.Text;
+    preview: EntryFieldTypes.Text;
     description: EntryFieldTypes.RichText;
+    body: EntryFieldTypes.RichText;
     thumbnail: EntryFieldTypes.AssetLink;
     skills: EntryFieldTypes.Array<EntryFieldTypes.Symbol>;
     githubLink?: EntryFieldTypes.Text;
