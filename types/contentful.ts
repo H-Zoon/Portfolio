@@ -12,3 +12,12 @@ export interface TypeProjectSkeleton {
     githubLink?: EntryFieldTypes.Text;
   };
 }
+
+export interface TypeAboutPageSkeleton {
+  contentTypeId: "aboutPage";
+  fields: {
+    title: EntryFieldTypes.Text;
+    profileImage: EntryFieldTypes.AssetLink;
+    body: EntryFieldTypes.RichText;
+  };
+}

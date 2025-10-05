@@ -12,19 +12,20 @@ export default function FeaturedProjects({ projects }: { projects: Entry<TypePro
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     {projects.map((project) => {
-                        const thumbnail = project.fields.thumbnail as Asset | undefined;
 
                         const title = typeof project.fields.title === 'string'
                             ? project.fields.title
                             : '제목 없음';
 
-                        const altText = typeof thumbnail?.fields.description === 'string'
-                            ? thumbnail.fields.description
-                            : title;
-
                         const skillsList = Array.isArray(project.fields.skills)
                             ? project.fields.skills
                             : project.fields.skills?.['ko-KR'] || [];
+
+                        const thumbnail = project.fields.thumbnail as Asset | undefined;
+                        const thumbnailImageUrl = thumbnail?.fields.file?.url
+                        const thumbnailImageDescription = typeof thumbnail?.fields.description === 'string'
+                            ? thumbnail.fields.description
+                            : title;
 
                         return (
                             <Link
@@ -32,10 +33,10 @@ export default function FeaturedProjects({ projects }: { projects: Entry<TypePro
                                 href={`/projects/${project.fields.slug}`}
                                 className="block bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300"
                             >
-                                {thumbnail?.fields.file?.url && (
+                                {thumbnailImageUrl && (
                                     <img
-                                        src={`https:${thumbnail.fields.file.url}`}
-                                        alt={altText}
+                                        src={`https:${thumbnailImageUrl}`}
+                                        alt={thumbnailImageDescription}
                                         className="w-full h-56 object-cover"
                                     />
                                 )}
@@ -45,7 +46,6 @@ export default function FeaturedProjects({ projects }: { projects: Entry<TypePro
                                         프로젝트 설명을 보려면 클릭하세요.
                                     </p>
                                     <div className="flex flex-wrap gap-2">
-                                        {/* 2. 이제 skillsList는 항상 배열이므로 .map을 안전하게 사용할 수 있습니다. */}
                                         {skillsList.map((tag: string) => (
                                             <span key={tag} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-semibold px-3 py-1 rounded-full">
                                                 {tag}

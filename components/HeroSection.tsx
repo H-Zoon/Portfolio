@@ -1,31 +1,88 @@
 // components/HeroSection.tsx
+import Image from 'next/image';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import type { Entry, Asset } from 'contentful';
+import type { Document } from '@contentful/rich-text-types';
+import { TypeAboutPageSkeleton } from '@/types/contentful';
 
-export default function HeroSection() {
+/*
+
+function isAsset(item: Asset | UnresolvedLink<'Asset'> | undefined): item is Asset {
+  // sys.type이 'Asset'이고 'fields' 속성을 가지고 있는지 확인
+  return item?.sys?.type === 'Asset' && 'fields' in item;
+}
+
+const { title, profileImage, body } = content.fields || {};
+
+  if (!isAsset(profileImage)) {
+    // profileImage가 없거나 링크뿐이라면, 렌더링하지 않거나 대체 UI를 보여줍니다.
+    return null; 
+  }
+
+*/
+
+export default function HeroSection({ content }: { content: Entry<TypeAboutPageSkeleton> | undefined }) {
+  if (!content) {
+    return null;
+  }
+
+  const title = typeof content.fields.title === 'string'
+    ? content.fields.title
+    : '제목 없음';
+
+  const richTextBody = content.fields.body as Document | undefined;
+
+  const profileImage = content.fields.profileImage as Asset | undefined;
+  const profileImageUrl = profileImage?.fields.file?.url
+  const profileImageDescription = typeof profileImage?.fields.description === 'string'
+    ? profileImage.fields.description
+    : title;
+
   return (
-    <section className="min-h-screen flex flex-col justify-center items-center text-center bg-gray-50 dark:bg-gray-900 p-8">
-      <h1 className="text-4xl md:text-6xl font-bold mb-4">
-        안녕하세요, <br />
-        안드로이드 개발자 OOO입니다.
-      </h1>
-      <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mb-8">
-        저는 사용자 경험 개선을 통해 실제 비즈니스 문제를 해결하는 것을 즐깁니다.
-        Jetpack Compose와 Coroutines를 사용한 현대적인 앱 개발에 자신 있습니다.
-      </p>
-      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-        <a
-          href="#projects" // 대표 프로젝트 섹션의 id로 연결
-          className="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300"
-        >
-          프로젝트 보기
-        </a>
-        <a
-          href="https://github.com/your-github-id" // 본인 깃허브 주소로 변경하세요
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-900 transition duration-300"
-        >
-          GitHub
-        </a>
+    <section id="about" className="container mx-auto py-20 px-8 flex flex-col items-center">
+      {title && (
+        <h1 className="text-4xl md:text-5xl font-bold mb-12 text-center">
+          {title}
+        </h1>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center w-full max-w-5xl">
+        <div className="md:col-span-1 flex justify-center">
+          {profileImageUrl && (
+            <Image
+              src={`https:${profileImageUrl}`}
+              alt={profileImageDescription}
+              width={250}
+              height={250}
+              className="rounded-full shadow-lg object-cover"
+              priority
+            />
+          )}
+        </div>
+
+        <div className="md:col-span-2">
+          <div className="prose dark:prose-invert max-w-none">
+            {richTextBody && documentToReactComponents(richTextBody)}
+          </div>
+          <div className="flex space-x-4 mt-8">
+            <a
+              href="https://velog.io/@jun34723/posts"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-900 transition duration-300"
+            >
+              Blog
+            </a>
+            <a
+              href="https://github.com/H-Zoon"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-900 transition duration-300"
+            >
+              GitHub
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -2,9 +2,8 @@
 import HeroSection from '@/components/HeroSection';
 import FeaturedProjects from '@/components/FeaturedProjects';
 import { contentfulClient } from '@/lib/contentful';
-import { TypeProjectSkeleton } from '@/types/contentful';
+import { TypeProjectSkeleton, TypeAboutPageSkeleton } from '@/types/contentful';
 
-// 1. 함수의 이름을 바꾸고 limit: 2 옵션을 제거합니다.
 async function getAllProjects() {
   const response = await contentfulClient.getEntries<TypeProjectSkeleton>({
     content_type: 'project',
@@ -14,12 +13,22 @@ async function getAllProjects() {
   return response.items;
 }
 
+async function getAboutPageContent() {
+  const response = await contentfulClient.getEntries<TypeAboutPageSkeleton>({
+    content_type: 'aboutPage',
+    limit: 1,
+    include: 2,
+  });
+  return response.items[0];
+}
+
 export default async function Home() {
   const projects = await getAllProjects();
+  const aboutContent = await getAboutPageContent();
 
-  return (
+return (
     <main>
-      <HeroSection />
+      <HeroSection content={aboutContent} />
       <FeaturedProjects projects={projects} />
     </main>
   );

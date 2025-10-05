@@ -12,9 +12,9 @@ export default function Header() {
           <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-blue-600">
             Home
           </Link>
-          <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-blue-600">
+          <a href="/#about" className="text-gray-600 dark:text-gray-300 hover:text-blue-600">
             About
-          </Link>
+          </a>
           <a href="#projects" className="text-gray-600 dark:text-gray-300 hover:text-blue-600">
             Projects
           </a>
