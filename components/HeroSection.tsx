@@ -5,44 +5,25 @@ import type { Entry, Asset } from 'contentful';
 import type { Document } from '@contentful/rich-text-types';
 import { TypeAboutPageSkeleton } from '@/types/contentful';
 
-/*
-
-function isAsset(item: Asset | UnresolvedLink<'Asset'> | undefined): item is Asset {
-  // sys.type이 'Asset'이고 'fields' 속성을 가지고 있는지 확인
-  return item?.sys?.type === 'Asset' && 'fields' in item;
-}
-
-const { title, profileImage, body } = content.fields || {};
-
-  if (!isAsset(profileImage)) {
-    // profileImage가 없거나 링크뿐이라면, 렌더링하지 않거나 대체 UI를 보여줍니다.
-    return null; 
-  }
-
-*/
-
 export default function HeroSection({ content }: { content: Entry<TypeAboutPageSkeleton> | undefined }) {
   if (!content) {
     return null;
   }
 
-  const title = typeof content.fields.title === 'string'
-    ? content.fields.title
-    : '제목 없음';
+  const { title, introduction, profileImage: rawProfileImage} = content.fields;
 
-  const richTextBody = content.fields.body as Document | undefined;
+  const profileImage = rawProfileImage as Asset | undefined;
+  const profileImageUrl = profileImage?.fields.file?.url;
+  const profileImageDescription = typeof profileImage?.fields.description === 'string' ? profileImage?.fields.description : '';
 
-  const profileImage = content.fields.profileImage as Asset | undefined;
-  const profileImageUrl = profileImage?.fields.file?.url
-  const profileImageDescription = typeof profileImage?.fields.description === 'string'
-    ? profileImage.fields.description
-    : title;
+  const displayTitle = typeof title === 'string' ? title : '';
+  //const introductionText = typeof introduction === 'string' ? introduction : '';
 
   return (
     <section id="about" className="container mx-auto py-20 px-8 flex flex-col items-center">
       {title && (
         <h1 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-          {title}
+          {displayTitle}
         </h1>
       )}
 
@@ -62,7 +43,7 @@ export default function HeroSection({ content }: { content: Entry<TypeAboutPageS
 
         <div className="md:col-span-2">
           <div className="prose dark:prose-invert max-w-none">
-            {richTextBody && documentToReactComponents(richTextBody)}
+            {introduction && documentToReactComponents(introduction as Document)}
           </div>
           <div className="flex space-x-4 mt-8">
             <a

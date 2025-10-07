@@ -9,6 +9,7 @@ async function getAllProjects() {
   const response = await contentfulClient.getEntries<TypeProjectSkeleton>({
     content_type: 'project',
     order: ['-sys.createdAt'],
+    locale: 'en-US',
     include: 2,
   });
   return response.items;
@@ -18,6 +19,7 @@ async function getAboutPageContent() {
   const response = await contentfulClient.getEntries<TypeAboutPageSkeleton>({
     content_type: 'aboutPage',
     limit: 1,
+    locale: 'en-US',
     include: 2,
   });
   return response.items[0];
