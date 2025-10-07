@@ -7,32 +7,20 @@ import { documentToReactComponents, Options } from '@contentful/rich-text-react-
 import { BLOCKS, MARKS, INLINES } from '@contentful/rich-text-types';
 import type { Asset } from 'contentful';
 import Link from "next/link";
+import Image from "next/image";
+import { Inter, Playfair_Display } from 'next/font/google';
 
-interface ProjectPageParams {
-  params: Promise<{ slug: string }>;
-}
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter', // CSS 변수로 사용
+});
 
-async function getProject(slug: string) {
-  const response = await contentfulClient.getEntries<TypeProjectSkeleton>({
-    content_type: 'project',
-    'fields.slug': slug,
-    limit: 1,
-    include: 2,
-  });
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair-display', // CSS 변수로 사용
+});
 
-  if (response.items.length === 0) {
-    notFound();
-  }
-  return response.items[0];
-}
-
-export default async function ProjectPage(props: ProjectPageParams) {
-  const params = await props.params;
-  const project = await getProject(params.slug);
-  const { title, summary, content, thumbnail: thumb, skills, gitHubLink, storeLink } = project.fields;
-  const thumbnail = thumb as Asset | undefined;
-
-  // 렌더링 옵션 정의
+// 렌더링 옵션 정의
   const options: Options = {
     // 인라인(inline) 스타일 렌더링 (볼드, 이탤릭 등)
     renderMark: {
@@ -130,64 +118,105 @@ export default async function ProjectPage(props: ProjectPageParams) {
     },
   };
 
+interface ProjectPageParams {
+  params: Promise<{ slug: string }>;
+}
+
+async function getProject(slug: string) {
+  const response = await contentfulClient.getEntries<TypeProjectSkeleton>({
+    content_type: 'project',
+    'fields.slug': slug,
+    limit: 1,
+    include: 2,
+  });
+
+  if (response.items.length === 0) {
+    notFound();
+  }
+  return response.items[0];
+}
+
+export default async function ProjectPage(props: ProjectPageParams) {
+  const params = await props.params;
+  const project = await getProject(params.slug);
+  const { title, summary, content, thumbnail: thumb, skills, gitHubLink, storeLink } = project.fields;
+  const thumbnail = thumb as Asset | undefined;
+
   return (
-    <article className="container mx-auto py-20 px-8">
-      {/* --- 제목 --- */}
-      <h1 className="text-4xl md:text-5xl font-bold text-center mb-12">
-        {title}
-      </h1>
+    // --- 2. TYPOGRAPHY: 폰트 변수 적용 ---
+    <article className={`container mx-auto py-20 px-6 ${inter.variable} ${playfairDisplay.variable} font-sans`}>
 
-      {/* --- 썸네일 이미지와 요약을 묶는 컨테이너 (변경됨) --- */}
-      <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center max-w-6xl mx-auto mb-16">
+      {/* --- 1. LAYOUT: Hero 섹션 --- */}
+      <header className="max-w-5xl mx-auto mb-16 md:mb-24">
+        <h1 className="text-4xl md:text-6xl font-bold text-center mb-8 font-serif">
+          {title}
+        </h1>
 
-        {/* --- 썸네일 이미지 (왼쪽, 3/10 너비) --- */}
-        <div className="w-full md:w-3/10">
-          {thumbnail?.fields.file?.url && (
-            <div className="aspect-video rounded-lg overflow-hidden shadow-lg">
-              <img
-                src={`https:${thumbnail.fields.file.url}`}
-                alt={
-                  typeof thumbnail.fields.description === 'string'
-                    ? thumbnail.fields.description
-                    : title
-                }
-                className="w-full h-full object-cover" // 이미지가 컨테이너에 맞게 잘리도록 설정
-              />
+        <div className="flex flex-col md:flex-row gap-8 md:gap-12">
+          
+          {/* --- 왼쪽: 썸네일 이미지 --- */}
+          <div className="w-full md:w-5/12">
+            {thumbnail?.fields.file?.url && (
+              // --- 3. INTERACTION: 호버 효과를 위한 group 클래스 추가 ---
+              <div className="group relative aspect-video rounded-lg overflow-hidden shadow-2xl">
+                {/* --- 1. CODE: next/image 컴포넌트로 교체 --- */}
+                <Image
+                  src={`https:${thumbnail.fields.file.url}`}
+                  alt={
+                    typeof thumbnail.fields.description === 'string'
+                      ? thumbnail.fields.description
+                      : title
+                  }
+                  fill
+                  className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* --- 오른쪽: 프로젝트 핵심 정보 --- */}
+          <div className="w-full md:w-7/12 flex flex-col justify-center">
+            <div className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+              {summary && documentToReactComponents(summary, options)}
             </div>
-          )}
+
+            {/* --- 스킬 태그 --- */}
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold mb-3">Skills Used</h4>
+              <div className="flex flex-wrap gap-2">
+                {skills.map(tag => (
+                  // 아이콘 추가 제안: <IconComponent className="mr-1.5" />
+                  <span key={tag} className="flex items-center bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-medium px-3 py-1.5 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* --- 링크 버튼 --- */}
+            <div className="flex flex-wrap gap-4 mt-auto">
+              {gitHubLink && (
+                <Link href={gitHubLink} target="_blank" className="bg-gray-800 hover:bg-gray-950 text-white font-bold py-2 px-5 rounded-lg transition-all duration-300 hover:scale-105 shadow-md">
+                  GitHub
+                </Link>
+              )}
+              {storeLink && (
+                <Link href={storeLink} target="_blank" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition-all duration-300 hover:scale-105 shadow-md">
+                  Visit Store
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
+      </header>
 
-        {/* --- 프로젝트 요약 (오른쪽, 7/10 너비) --- */}
-        <div className="w-full md:w-7/10 text-lg text-gray-600 dark:text-gray-300">
-          {summary && documentToReactComponents(summary, options)}
-        </div>
-      </div>
-
-      {/* --- 스킬 태그 --- */}
-      <div className="flex flex-wrap gap-2 justify-center mb-6">
-        {skills.map(tag => (
-          <span key={tag} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-semibold px-3 py-1 rounded-full">
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      {/* --- 링크 버튼 (Github, Store) --- */}
-      <div className="flex flex-wrap gap-4 justify-center mb-12">
-        {gitHubLink && (
-          <Link href={gitHubLink} target="_blank" className="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded transition-colors duration-300">
-            GitHub
-          </Link>
-        )}
-        {storeLink && (
-          <Link href={storeLink} target="_blank" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300">
-            Visit Store
-          </Link>
-        )}
-      </div>
-
-      {/* --- 본문 내용 (content) --- */}
-      <div className="prose dark:prose-invert max-w-2xl mx-auto">
+      <hr className="my-16 border-gray-200 dark:border-gray-700" />
+      
+      {/* --- 본문 내용 (prose로 스타일링) --- */}
+      {/* 추가 개선 제안: framer-motion을 사용하여 스크롤 애니메이션 적용 가능
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      */}
+      <div className="prose dark:prose-invert max-w-3xl mx-auto prose-lg">
         {content && documentToReactComponents(content, options)}
       </div>
     </article>

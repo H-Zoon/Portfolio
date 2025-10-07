@@ -16,11 +16,36 @@ export interface TypeProjectSkeleton {
   };
 }
 
-export interface TypeAboutPageSkeleton {
-  contentTypeId: "aboutPage";
+export interface TypeAboutSkeleton {
+  contentTypeId: "about";
   fields: {
     title: EntryFieldTypes.Text;
     profileImage: EntryFieldTypes.AssetLink;
     introduction: EntryFieldTypes.RichText;
+  };
+}
+
+/**
+ * @name Education Item (educationItem)
+ * @description 학력 정보 하나를 나타내는 모델
+ */
+export interface TypeEducationSkeleton {
+  contentTypeId: "education";
+  fields: {
+    schoolName: EntryFieldTypes.Text;
+    period: EntryFieldTypes.Text;
+    description: EntryFieldTypes.Text;
+  };
+}
+
+/**
+ * @name Record Item (recordItem)
+ * @description 활동 및 수상 내역 하나를 나타내는 모델
+ */
+export interface TypeRecordSkeleton {
+  contentTypeId: "record";
+  fields: {
+    title: EntryFieldTypes.Text;
+    date: EntryFieldTypes.Date;
   };
 }
