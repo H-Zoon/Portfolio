@@ -1,9 +1,10 @@
 // app/page.tsx
 import HeroSection from '@/components/HeroSection';
 import FeaturedProjects from '@/components/FeaturedProjects';
+import FeaturedActives from '@/components/FeaturedActives';
 import Experience from '@/components/Experience';
 import { contentfulClient } from '@/lib/contentful';
-import { TypeProjectSkeleton, TypeAboutSkeleton, TypeEducationSkeleton, TypeRecordSkeleton} from '@/types/contentful';
+import { TypeProjectSkeleton, TypeAboutSkeleton, TypeEducationSkeleton, TypeRecordSkeleton, TypeActiveSkeleton} from '@/types/contentful';
 
 async function getAbout() {
   const response = await contentfulClient.getEntries<TypeAboutSkeleton>({
@@ -18,6 +19,16 @@ async function getAbout() {
 async function getProjects() {
   const response = await contentfulClient.getEntries<TypeProjectSkeleton>({
     content_type: 'project',
+    order: ['-sys.createdAt'],
+    locale: 'en-US', // 필요시 'ko' 등으로 변경
+    include: 2,
+  });
+  return response.items;
+}
+
+async function getActives() {
+  const response = await contentfulClient.getEntries<TypeActiveSkeleton>({
+    content_type: 'active',
     order: ['-sys.createdAt'],
     locale: 'en-US', // 필요시 'ko' 등으로 변경
     include: 2,
@@ -49,12 +60,14 @@ export default async function Home() {
     projects,
     about,
     educations,
-    records
+    records,
+    actives,
   ] = await Promise.all([
     getProjects(),
     getAbout(),
     getEducations(),
     getRecords(),
+    getActives(),
   ]);
 
   return (
@@ -62,6 +75,7 @@ export default async function Home() {
       <HeroSection content={about} />
       <Experience educations={educations} records={records} />
       <FeaturedProjects projects={projects} />
+      <FeaturedActives projects={actives} />
     </main>
   );
 }

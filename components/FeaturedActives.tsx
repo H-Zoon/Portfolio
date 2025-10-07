@@ -1,10 +1,10 @@
 // components/FeaturedProjects.tsx
-import { TypeProjectSkeleton } from "@/types/contentful";
+import { TypeActiveSkeleton } from "@/types/contentful";
 import type { Entry, Asset } from "contentful";
 import Link from 'next/link';
 import Image from 'next/image'; // 변경점: next/image 임포트
 
-export default function FeaturedProjects({ projects }: { projects: Entry<TypeProjectSkeleton>[] }) {
+export default function FeaturedProjects({ projects }: { projects: Entry<TypeActiveSkeleton>[] }) {
     return (
         <section id="projects" className="py-20 px-8 bg-white dark:bg-gray-800">
             <div className="container mx-auto">
@@ -27,7 +27,7 @@ export default function FeaturedProjects({ projects }: { projects: Entry<TypePro
                         return (
                             <Link
                                 key={id}
-                                href={`/project/${slug}`}
+                                href={`/active/${slug}`}
                                 className="block bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300"
                             >
                                 {/** 변경점: Image 컴포넌트 사용 및 높이 고정
