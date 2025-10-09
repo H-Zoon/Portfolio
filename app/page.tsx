@@ -1,7 +1,5 @@
 // app/page.tsx
 import HeroSection from '@/components/HeroSection';
-//import FeaturedProjects from '@/components/FeaturedProjects';
-//import FeaturedActives from '@/components/FeaturedActives';
 import FeaturedItems from '@/components/FeaturedItems';
 import Experience from '@/components/Experience';
 import { contentfulClient } from '@/lib/contentful';
@@ -9,33 +7,13 @@ import { TypeAboutSkeleton, TypeEducationSkeleton, TypeRecordSkeleton, TypePortf
 
 async function getAbout() {
   const response = await contentfulClient.getEntries<TypeAboutSkeleton>({
-    content_type: 'about',
+    content_type: 'profileImage',
     limit: 1,
     locale: 'en-US',
     include: 2,
   });
   return response.items[0];
 }
-
-// async function getProjects() {
-//   const response = await contentfulClient.getEntries<TypeProjectSkeleton>({
-//     content_type: 'project',
-//     order: ['-sys.createdAt'],
-//     locale: 'en-US', // 필요시 'ko' 등으로 변경
-//     include: 2,
-//   });
-//   return response.items;
-// }
-
-// async function getActives() {
-//   const response = await contentfulClient.getEntries<TypeActiveSkeleton>({
-//     content_type: 'active',
-//     order: ['-sys.createdAt'],
-//     locale: 'en-US', // 필요시 'ko' 등으로 변경
-//     include: 2,
-//   });
-//   return response.items;
-// }
 
 // 공통 데이터 fetching 함수
 async function getPortfolioItems(type: 'project' | 'active') {
@@ -78,11 +56,9 @@ export default async function Home() {
   ] = await Promise.all([
     getPortfolioItems('project'),
     getPortfolioItems('active'),
-    //getProjects(),
     getAbout(),
     getEducations(),
     getRecords(),
-    //getActives(),
   ]);
 
   return (
@@ -91,8 +67,6 @@ export default async function Home() {
       <Experience educations={educations} records={records} />
       <FeaturedItems title="Projects" items={projects} type="project" />
       <FeaturedItems title="Actives" items={actives} type="active" />
-      {/* <FeaturedProjects projects={projects} />
-      <FeaturedActives projects={actives} /> */}
     </main>
   );
 }

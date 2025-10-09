@@ -12,7 +12,6 @@ export default function Experience({ educations, records }: ExperienceProps) {
   return (
     <section id="experience" className="py-20 px-8 bg-white dark:bg-gray-800">
       <div className="container mx-auto">
-        {/* 2. 제목들을 다시 하드코딩 */}
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
           Experience
         </h2>
@@ -23,7 +22,7 @@ export default function Experience({ educations, records }: ExperienceProps) {
               Education
             </h3>
             <div className="relative border-l-2 border-gray-200 dark:border-gray-700">
-              {/* 3. educationItems prop을 직접 사용 */}
+              {/* educationItems prop을 직접 사용 */}
               {educations
                 ?.filter(
                   (item): item is Entry<TypeEducationSkeleton, undefined, string> => 'fields' in item

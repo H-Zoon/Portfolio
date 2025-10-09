@@ -4,13 +4,26 @@ import { TypePortfolioItemSkeleton } from "@/types/contentful";
 import { notFound } from "next/navigation";
 import PortfolioItemPage from "@/components/PortfolioItemPage"; // 공통 페이지 컴포넌트
 
+export async function generateStaticParams() {
+  const response = await contentfulClient.getEntries<TypePortfolioItemSkeleton>({
+    content_type: 'project',
+    select: ['fields.slug'],
+  });
+
+  return response.items
+    .filter(item => item.fields?.slug)
+    .map((item) => ({
+      slug: item.fields.slug,
+    }));
+}
+
 interface PageParams {
   params: { slug: string };
 }
 
 async function getItem(slug: string) {
   const response = await contentfulClient.getEntries<TypePortfolioItemSkeleton>({
-    content_type: 'active', // content_type만 다름
+    content_type: 'active',
     'fields.slug': slug,
     limit: 1,
     include: 2,
@@ -22,7 +35,7 @@ async function getItem(slug: string) {
   return response.items[0];
 }
 
-export default async function ActivePage({ params }: PageParams) {
-  const item = await getItem(params.slug);
+export default async function ProjectPage({ params: { slug } }: PageParams) {
+  const item = await getItem(slug); // 바로 slug 변수 사용
   return <PortfolioItemPage item={item} />;
 }

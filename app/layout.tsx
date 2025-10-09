@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OOO의 포트폴리오",
-  description: "문제를 해결하는 안드로이드 개발자 OOO입니다.",
+  title: "최현준의 포트폴리오",
+  description: "방문을 환영합니다.",
 };
 
 export default function RootLayout({

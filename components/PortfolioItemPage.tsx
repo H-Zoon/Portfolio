@@ -4,20 +4,9 @@ import { BLOCKS, MARKS, INLINES, type Text, type Document } from '@contentful/ri
 import type { Asset, Entry } from 'contentful';
 import Link from "next/link";
 import Image from "next/image";
-import { Inter, Playfair_Display } from 'next/font/google';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { TypePortfolioItemSkeleton, TypeImageWithTextSkeleton } from '@/types/contentful';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter', // CSS 변수로 사용
-});
-
-const playfairDisplay = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair-display', // CSS 변수로 사용
-});
 
 const isText = (node: any): node is Text => {
   return node.nodeType === 'text';
@@ -225,12 +214,11 @@ export default function PortfolioItemPage({ item }: PortfolioItemPageProps) {
   const skillsList = Array.isArray(skills) ? skills : [];
 
   return (
-    <article className={`container mx-auto py-20 px-6 ${inter.variable} ${playfairDisplay.variable} font-sans`}>
+    <article className={`container mx-auto py-20 px-6 font-sans`}>
 
       {/* --- 1. LAYOUT: Hero 섹션 --- */}
       <header className="max-w-5xl mx-auto mb-16 md:mb-24">
-        <h1 className="text-4xl md:text-6xl font-bold text-center mb-8 font-serif">
-          {/* 💡 수정된 변수 사용 */}
+        <h1 className="text-4xl md:text-6xl font-bold text-center mb-8 -font-sans">
           {displayTitle}
         </h1>
 
@@ -287,10 +275,6 @@ export default function PortfolioItemPage({ item }: PortfolioItemPageProps) {
 
       <hr className="my-16 border-gray-200 dark:border-gray-700" />
 
-      {/* --- 본문 내용 (prose로 스타일링) --- */}
-      {/* 추가 개선 제안: framer-motion을 사용하여 스크롤 애니메이션 적용 가능
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      */}
       <div className="prose dark:prose-invert max-w-3xl mx-auto prose-lg">
         {renderableContent && documentToReactComponents(renderableContent, options)}
       </div>
