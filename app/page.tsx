@@ -1,7 +1,7 @@
 // app/page.tsx
 import HeroSection from '@/components/HeroSection';
-import FeaturedProjects from '@/components/FeaturedProjects';
-import FeaturedActives from '@/components/FeaturedActives';
+//import FeaturedProjects from '@/components/FeaturedProjects';
+//import FeaturedActives from '@/components/FeaturedActives';
 import FeaturedItems from '@/components/FeaturedItems';
 import Experience from '@/components/Experience';
 import { contentfulClient } from '@/lib/contentful';
