@@ -2,9 +2,10 @@
 import HeroSection from '@/components/HeroSection';
 import FeaturedProjects from '@/components/FeaturedProjects';
 import FeaturedActives from '@/components/FeaturedActives';
+import FeaturedItems from '@/components/FeaturedItems';
 import Experience from '@/components/Experience';
 import { contentfulClient } from '@/lib/contentful';
-import { TypeProjectSkeleton, TypeAboutSkeleton, TypeEducationSkeleton, TypeRecordSkeleton, TypeActiveSkeleton} from '@/types/contentful';
+import { TypeAboutSkeleton, TypeEducationSkeleton, TypeRecordSkeleton, TypePortfolioItemSkeleton } from '@/types/contentful';
 
 async function getAbout() {
   const response = await contentfulClient.getEntries<TypeAboutSkeleton>({
@@ -16,25 +17,37 @@ async function getAbout() {
   return response.items[0];
 }
 
-async function getProjects() {
-  const response = await contentfulClient.getEntries<TypeProjectSkeleton>({
-    content_type: 'project',
+// async function getProjects() {
+//   const response = await contentfulClient.getEntries<TypeProjectSkeleton>({
+//     content_type: 'project',
+//     order: ['-sys.createdAt'],
+//     locale: 'en-US', // 필요시 'ko' 등으로 변경
+//     include: 2,
+//   });
+//   return response.items;
+// }
+
+// async function getActives() {
+//   const response = await contentfulClient.getEntries<TypeActiveSkeleton>({
+//     content_type: 'active',
+//     order: ['-sys.createdAt'],
+//     locale: 'en-US', // 필요시 'ko' 등으로 변경
+//     include: 2,
+//   });
+//   return response.items;
+// }
+
+// 공통 데이터 fetching 함수
+async function getPortfolioItems(type: 'project' | 'active') {
+  const response = await contentfulClient.getEntries<TypePortfolioItemSkeleton>({
+    content_type: type,
     order: ['-sys.createdAt'],
-    locale: 'en-US', // 필요시 'ko' 등으로 변경
+    locale: 'en-US',
     include: 2,
   });
   return response.items;
 }
 
-async function getActives() {
-  const response = await contentfulClient.getEntries<TypeActiveSkeleton>({
-    content_type: 'active',
-    order: ['-sys.createdAt'],
-    locale: 'en-US', // 필요시 'ko' 등으로 변경
-    include: 2,
-  });
-  return response.items;
-}
 
 // 3. Education Item들을 가져오는 함수 추가
 async function getEducations() {
@@ -58,24 +71,28 @@ export default async function Home() {
   // 5. Promise.all을 사용해 모든 데이터를 병렬로 호출
   const [
     projects,
+    actives,
     about,
     educations,
     records,
-    actives,
   ] = await Promise.all([
-    getProjects(),
+    getPortfolioItems('project'),
+    getPortfolioItems('active'),
+    //getProjects(),
     getAbout(),
     getEducations(),
     getRecords(),
-    getActives(),
+    //getActives(),
   ]);
 
   return (
     <main>
       <HeroSection content={about} />
       <Experience educations={educations} records={records} />
-      <FeaturedProjects projects={projects} />
-      <FeaturedActives projects={actives} />
+      <FeaturedItems title="Projects" items={projects} type="project" />
+      <FeaturedItems title="Actives" items={actives} type="active" />
+      {/* <FeaturedProjects projects={projects} />
+      <FeaturedActives projects={actives} /> */}
     </main>
   );
 }
