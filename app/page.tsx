@@ -19,7 +19,7 @@ async function getAbout() {
 async function getPortfolioItems(type: 'project' | 'active') {
   const response = await contentfulClient.getEntries<TypePortfolioItemSkeleton>({
     content_type: type,
-    order: ['-sys.createdAt'],
+    order: ['-sys.updatedAt'],
     locale: 'en-US',
     include: 2,
   });
